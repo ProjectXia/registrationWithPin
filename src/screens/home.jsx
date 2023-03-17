@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import ConToMongoDB from "../components/contomangodb";
 
 export default function Home({ navigation }) {
   return (
@@ -37,6 +38,7 @@ export default function Home({ navigation }) {
           Logout
         </Text>
       </TouchableOpacity>
+      <ConToMongoDB />
     </View>
   );
 }
