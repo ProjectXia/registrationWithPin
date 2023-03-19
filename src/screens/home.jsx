@@ -6,20 +6,33 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" backgroundColor="orange" />
-      <Text
+      <View
         style={{
-          fontSize: 30,
-          color: "orange",
-          fontWeight: "700",
-          marginBottom: 20,
+          position: "absolute",
+          top: 40,
+          alignContent: "center",
+          alignItems: "center",
         }}
       >
-        Welcome to Home
-      </Text>
-      <Image
-        source={require("../../assets/logo.png")}
-        style={{ width: 180, height: 160, marginBottom: 10 }}
-      />
+        <Text
+          style={{
+            fontSize: 30,
+            color: "orange",
+            fontWeight: "700",
+            marginBottom: 20,
+          }}
+        >
+          Welcome to Home
+        </Text>
+        <Image
+          source={require("../../assets/logo.png")}
+          style={{ width: 180, height: 160, marginBottom: 10 }}
+        />
+      </View>
+      <View style={{ position: "absolute", top: 250, height: 500 }}>
+        <ConToMongoDB />
+      </View>
+
       <TouchableOpacity
         style={{
           width: "80%",
@@ -29,6 +42,8 @@ export default function Home({ navigation }) {
           justifyContent: "center",
           marginTop: 20,
           borderRadius: 10,
+          position: "absolute",
+          bottom: 10,
         }}
         onPress={() => {
           navigation.replace("login");
@@ -38,7 +53,6 @@ export default function Home({ navigation }) {
           Logout
         </Text>
       </TouchableOpacity>
-      <ConToMongoDB />
     </View>
   );
 }

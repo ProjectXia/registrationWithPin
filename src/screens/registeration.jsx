@@ -1,9 +1,97 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { InputField, InputPIN } from "../components/inputfield";
-import { KeycodeInput } from "react-native-keycode";
 
 export default function Registration() {
+  ////////////////////////////////////////////////////////////////////////////////
+  const [data, setData] = useState([]);
+  const [id, setId] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [mobilenumber, setMobilenumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [pin, setPin] = useState("");
+  const [streetno, setStreetno] = useState("");
+  const [houseno, setHouseno] = useState("");
+  //////////////////////////////////////////////fetch data ///////////////////////
+
+  const fetchData = async () => {
+    const config = {
+      method: "post",
+      url: "https://ap-south-1.aws.data.mongodb-api.com/app/data-ecnwv/endpoint/data/v1/action/find",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Request-Headers": "*",
+        "api-key":
+          "hnUndUAilcoSZPS22zu1p5GyfOKaEs09ke3raWDym10IQWJ7PNRhcIIuoKg2ZyoZ",
+      },
+      data: JSON.stringify({
+        collection: "user",
+        database: "whyyoucooktoday",
+        dataSource: "testingApi1",
+        // filter: {
+        //   status: "PENDING",
+        // },
+      }),
+    };
+
+    try {
+      const response = await axios(config);
+      setData(response.data.documents);
+      setId(data.length);
+      // console.log(data.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  ///////////////////////////////////////////end fetch data//////////////////////
+  // ////////////////////////////////////////// Insert Documnet////////////////////
+  const insertData = async (datapostt) => {
+    const apiKey =
+      "hnUndUAilcoSZPS22zu1p5GyfOKaEs09ke3raWDym10IQWJ7PNRhcIIuoKg2ZyoZ";
+    const config = {
+      method: "post",
+      url: "https://ap-south-1.aws.data.mongodb-api.com/app/data-ecnwv/endpoint/data/v1/action/insertOne",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Request-Headers": "*",
+        "api-key": apiKey,
+      },
+      data: datapostt,
+    };
+    try {
+      const response = await axios(config);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Example usage
+  const datapost = JSON.stringify({
+    collection: "user",
+    database: "whyyoucooktoday",
+    dataSource: "testingApi1",
+    document: {
+      firstname: "firstname",
+      lastname: "lastname",
+      mobilenumber: "mobilenumber",
+      email: "projectmail81@gmail.com",
+      pin: "1122",
+      streetno: "streetno",
+      houseno: "houseno",
+      status: "PENDING",
+      id: "3",
+    },
+  });
+
+  /////////////////////////////////////////end Insert Documnet//////////////////
+  useEffect(() => {
+    fetchData();
+  }, []);
+  ///////////////////////////////////////////////////////////////////////////////
   return (
     <View style={styles.container}>
       <StatusBar style="auto" backgroundColor="orange" />
@@ -14,12 +102,28 @@ export default function Registration() {
       <Text style={{ fontSize: 30, color: "orange", fontWeight: "700" }}>
         Registration Form
       </Text>
-      <InputField placeholder={"First Name"} />
-      <InputField placeholder={"Last Name"} />
-      <InputField placeholder={"Mobile Number"} />
+      <InputField
+        placeholder={"First Name"}
+        value={firstname}
+        onChangeText={setFirstname}
+      />
+      <InputField
+        placeholder={"Last Name"}
+        value={lastname}
+        onChangeText={setLastname}
+      />
+      <InputField
+        placeholder={"Mobile Number"}
+        maxlength={11}
+        value={mobilenumber}
+        onChangeText={setMobilenumber}
+        keyboardType={"phone-pad"}
+      />
       <InputField
         placeholder={"Email Address"}
         keyboardType={"email-address"}
+        value={email}
+        onChangeText={setEmail}
       />
       <View
         style={{
@@ -44,13 +148,13 @@ export default function Registration() {
         >
           Enter 4 digit pin
         </Text>
-
-        <KeycodeInput
+        <InputPIN placeholder={"PIN"} value={pin} onChangeText={setPin} />
+        {/* <KeycodeInput
           onComplete={(value) => {
-            alert(value);
+            setPin(value);
           }}
           numeric={true}
-        />
+        /> */}
       </View>
 
       <View
@@ -76,8 +180,16 @@ export default function Registration() {
         >
           Address
         </Text>
-        <InputField placeholder={"House No"} />
-        <InputField placeholder={"Street No"} />
+        <InputField
+          placeholder={"House No"}
+          value={houseno}
+          onChangeText={setHouseno}
+        />
+        <InputField
+          placeholder={"Street No"}
+          value={streetno}
+          onChangeText={setStreetno}
+        />
       </View>
       <TouchableOpacity
         style={{
@@ -88,6 +200,11 @@ export default function Registration() {
           justifyContent: "center",
           marginTop: 20,
           borderRadius: 10,
+        }}
+        onPress={() => {
+          console.log(`Your PIN : ${pin}`);
+          console.log(`data length: ${id + 1}`);
+          // insertData(datapost);
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: "600", color: "white" }}>
