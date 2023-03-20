@@ -2,7 +2,10 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import ConToMongoDB from "../components/contomangodb";
 
-export default function Home({ navigation }) {
+export default function Home({ route, navigation }) {
+  const { email } = route.params;
+  let EMAIL = email;
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" backgroundColor="orange" />
@@ -24,14 +27,20 @@ export default function Home({ navigation }) {
         >
           Welcome to Home
         </Text>
+        <Text>{EMAIL}</Text>
         <Image
           source={require("../../assets/logo.png")}
           style={{ width: 180, height: 160, marginBottom: 10 }}
         />
       </View>
-      <View style={{ position: "absolute", top: 250, height: 500 }}>
-        <ConToMongoDB />
-      </View>
+      {checklogin()}
+      {EMAIL === "admin@gmail.com" ? (
+        <View style={{ position: "absolute", top: 250, height: 500 }}>
+          <ConToMongoDB />
+        </View>
+      ) : (
+        <View></View>
+      )}
 
       <TouchableOpacity
         style={{

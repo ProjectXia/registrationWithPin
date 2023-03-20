@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   RefreshControl,
+  Linking,
 } from "react-native";
 
 const ConToMongoDB = () => {
@@ -95,6 +96,15 @@ const ConToMongoDB = () => {
     return null;
   };
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////Send Email////////////////////////////////////////////////
+  const sendEmail = (toEmail) => {
+    const recipientEmail = toEmail;
+    const subject = "Approval Request";
+    const body = "THANKS FOR REGISTRATION";
+
+    Linking.openURL(`mailto:${recipientEmail}?subject=${subject}&body=${body}`);
+  };
+  //////////////////////////////////////End Send Emai////////////////////////////////////////////
   return (
     <View>
       <Text
@@ -152,6 +162,7 @@ const ConToMongoDB = () => {
                 setDOCUMENT_ID(item.id);
                 updateStatusDB();
                 fetchData();
+                sendEmail(item.email);
               }}
             >
               <Text style={{ color: "white" }}>{item.status}</Text>

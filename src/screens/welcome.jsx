@@ -31,7 +31,7 @@ export default function Welcome({ navigation }) {
           borderRadius: 10,
         }}
         onPress={() => {
-          navigation.navigate("home");
+          navigation.navigate("login");
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: "600", color: "white" }}>

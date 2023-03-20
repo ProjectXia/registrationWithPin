@@ -1,10 +1,17 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { InputField, InputPIN } from "../components/inputfield";
 
-export default function Registration() {
+export default function Registration({ navigation }) {
   ////////////////////////////////////////////////////////////////////////////////
   const [data, setData] = useState([]);
   const [id, setId] = useState("");
@@ -15,9 +22,10 @@ export default function Registration() {
   const [pin, setPin] = useState("");
   const [streetno, setStreetno] = useState("");
   const [houseno, setHouseno] = useState("");
+  const [loading, setLoading] = useState(false);
   //////////////////////////////////////////////fetch data ///////////////////////
 
-  const fetchData = async () => {
+  const fetchData = async ({ navigation }) => {
     const config = {
       method: "post",
       url: "https://ap-south-1.aws.data.mongodb-api.com/app/data-ecnwv/endpoint/data/v1/action/find",
@@ -64,6 +72,8 @@ export default function Registration() {
     try {
       const response = await axios(config);
       console.log(response.data);
+      setLoading(false);
+      navigator.replace("login");
     } catch (error) {
       console.log(error);
     }
@@ -75,19 +85,97 @@ export default function Registration() {
     database: "whyyoucooktoday",
     dataSource: "testingApi1",
     document: {
-      firstname: "firstname",
-      lastname: "lastname",
-      mobilenumber: "mobilenumber",
-      email: "projectmail81@gmail.com",
-      pin: "1122",
-      streetno: "streetno",
-      houseno: "houseno",
+      firstname: firstname,
+      lastname: lastname,
+      mobilenumber: mobilenumber,
+      email: email,
+      pin: pin,
+      streetno: streetno,
+      houseno: houseno,
       status: "PENDING",
-      id: "3",
+      id: id + 1,
     },
   });
 
   /////////////////////////////////////////end Insert Documnet//////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  const onSubmit = () => {
+    console.log(`Your PIN : ${pin}`);
+    console.log(`data length: ${id + 1}`);
+    let validate = false;
+    let emailAlreadyExit = false;
+
+    if (id === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (firstname === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (lastname === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (mobilenumber === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (pin === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (email === "") {
+      validate = false;
+    } else {
+      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+      if (reg.test(email) === false) {
+        console.log("Email is Not Correct");
+        alert("Email is Not Correct");
+        validate = false;
+      } else {
+        validate = true;
+      }
+    }
+    if (houseno === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (streetno === "") {
+      validate = false;
+    } else {
+      validate = true;
+    }
+    if (validate === false) {
+      alert("Please Fill the Fields");
+    } else {
+      setLoading(true);
+      // console.log(datapost);
+      var BreakException = {};
+      try {
+        data.forEach((val) => {
+          if (val.email === email) throw BreakException;
+        });
+      } catch (e) {
+        if (e !== BreakException) throw e;
+        console.log("Email Already Exist");
+        alert("Email Already Exist");
+        emailAlreadyExit = true;
+        setLoading(false);
+      }
+      if (emailAlreadyExit === false) {
+        insertData(datapost);
+      }
+    }
+  };
+  /////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     fetchData();
   }, []);
@@ -149,12 +237,6 @@ export default function Registration() {
           Enter 4 digit pin
         </Text>
         <InputPIN placeholder={"PIN"} value={pin} onChangeText={setPin} />
-        {/* <KeycodeInput
-          onComplete={(value) => {
-            setPin(value);
-          }}
-          numeric={true}
-        /> */}
       </View>
 
       <View
@@ -202,14 +284,28 @@ export default function Registration() {
           borderRadius: 10,
         }}
         onPress={() => {
-          console.log(`Your PIN : ${pin}`);
-          console.log(`data length: ${id + 1}`);
-          // insertData(datapost);
+          onSubmit();
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "600", color: "white" }}>
-          Submit
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {loading === true ? (
+            <ActivityIndicator
+              animating={loading}
+              color={"darkornage"}
+              size={60}
+            />
+          ) : (
+            <View></View>
+          )}
+          <Text style={{ fontSize: 18, fontWeight: "600", color: "white" }}>
+            Submit
+          </Text>
+        </View>
       </TouchableOpacity>
     </View>
   );
