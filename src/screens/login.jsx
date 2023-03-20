@@ -68,6 +68,8 @@ const Login = ({ navigation }) => {
         } else {
           console.log("PENDING FOR ADMIN APPROVAL");
           alert("PENDING FOR ADMIN APPROVAL");
+          setLoading(false);
+          setEnteredPin("");
         }
       });
     } catch (error) {

@@ -25,7 +25,7 @@ export default function Registration({ navigation }) {
   const [loading, setLoading] = useState(false);
   //////////////////////////////////////////////fetch data ///////////////////////
 
-  const fetchData = async ({ navigation }) => {
+  const fetchData = async () => {
     const config = {
       method: "post",
       url: "https://ap-south-1.aws.data.mongodb-api.com/app/data-ecnwv/endpoint/data/v1/action/find",
@@ -49,7 +49,7 @@ export default function Registration({ navigation }) {
       const response = await axios(config);
       setData(response.data.documents);
       setId(data.length);
-      // console.log(data.length);
+      console.log("data length:" + data.length);
     } catch (error) {
       console.log(error);
     }
@@ -73,7 +73,6 @@ export default function Registration({ navigation }) {
       const response = await axios(config);
       console.log(response.data);
       setLoading(false);
-      navigator.replace("login");
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +100,8 @@ export default function Registration({ navigation }) {
   //////////////////////////////////////////////////////////////////////////////
   const onSubmit = () => {
     console.log(`Your PIN : ${pin}`);
-    console.log(`data length: ${id + 1}`);
+    setId(data.length);
+    console.log(`your Id: ${id + 1}`);
     let validate = false;
     let emailAlreadyExit = false;
 
@@ -284,7 +284,9 @@ export default function Registration({ navigation }) {
           borderRadius: 10,
         }}
         onPress={() => {
+          console.log(`your data length + 1:  ${data.length + 1}`);
           onSubmit();
+          navigation.replace("login");
         }}
       >
         <View

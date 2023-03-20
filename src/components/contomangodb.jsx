@@ -13,7 +13,6 @@ import {
 const ConToMongoDB = () => {
   ///////////////////////////////////////////////////////////////////////
   const [data, setData] = useState([]);
-  const [DOCUMENT_ID, setDOCUMENT_ID] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   //////////////////////////////////////////////////////////////////////////
   const handleRefresh = () => {
@@ -39,6 +38,7 @@ const ConToMongoDB = () => {
         // filter: {
         //   status: "PENDING",
         // },
+        sort: { status: -1 },
       }),
     };
 
@@ -53,7 +53,7 @@ const ConToMongoDB = () => {
   /////////////////////////////////////////////////////////////////////////////////////////////End fetch data////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////////////////////////////Update Only Status////////////////////////////////////////////
-  const updateStatusDB = async () => {
+  const updateStatusDB = async (updateID) => {
     const config = {
       method: "post",
       url: "https://ap-south-1.aws.data.mongodb-api.com/app/data-ecnwv/endpoint/data/v1/action/updateOne",
@@ -68,7 +68,7 @@ const ConToMongoDB = () => {
         database: "whyyoucooktoday",
         dataSource: "testingApi1",
         filter: {
-          id: DOCUMENT_ID, // replace with the actual document ID
+          id: updateID, // replace with the actual document ID
         },
         update: {
           $set: {
@@ -80,6 +80,7 @@ const ConToMongoDB = () => {
     try {
       const response = await axios(config);
       console.log(response.data);
+      console.log("updateID : " + updateID);
     } catch (error) {
       console.log(error);
     }
@@ -159,10 +160,16 @@ const ConToMongoDB = () => {
                 right: 10,
               }}
               onPress={() => {
-                setDOCUMENT_ID(item.id);
-                updateStatusDB();
-                fetchData();
+                console.log("email : " + item.email);
+                data.forEach((val) => {
+                  if (item.email === val.email) {
+                    console.log("docID : " + val.id);
+                    updateStatusDB(val.id);
+                  }
+                });
+
                 sendEmail(item.email);
+                fetchData();
               }}
             >
               <Text style={{ color: "white" }}>{item.status}</Text>

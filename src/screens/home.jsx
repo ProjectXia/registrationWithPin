@@ -33,7 +33,7 @@ export default function Home({ route, navigation }) {
           style={{ width: 180, height: 160, marginBottom: 10 }}
         />
       </View>
-      {checklogin()}
+
       {EMAIL === "admin@gmail.com" ? (
         <View style={{ position: "absolute", top: 250, height: 500 }}>
           <ConToMongoDB />
